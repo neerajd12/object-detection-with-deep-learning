@@ -30,7 +30,7 @@ def get_model():
         The architecture is the same as I developed for project 2
         https://github.com/neerajdixit/Traffic-Sign-classifier-with-Deep-Learning
         with an additional normalization layer in front and
-        a final fully connected layer of size 1 since we need one output.
+        a final fully connected layer of size 5 since we have 5 different type of objects in our data set.
     """
 
     # Create a Keras sequential model
