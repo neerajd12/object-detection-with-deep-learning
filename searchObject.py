@@ -98,10 +98,14 @@ def search_windows(img, windows):
         #3) Extract the test window from original image
         image_array = image_utils.pre_process_image(img[window[0][1]:window[1][1], window[0][0]:window[1][0]])
         transformed_image_array = image_array[None, :, :, :]
-        pred = model.predict(transformed_image_array, batch_size=1)
-        max = np.argmax(pred)
-        if max == 0 and pred[0][max] > 0.90:
+        pred = model.predict_classes(transformed_image_array, batch_size=1)
+        if pred == 0:
             on_windows.append(window)
+        # print (pred)
+        # pred = model.predict(transformed_image_array, batch_size=1)
+        # max = np.argmax(pred)
+        # if max == 0 and pred[0][max] > 0.90:
+        #     on_windows.append(window)
     #8) Return windows for positive detections
     return on_windows
 
@@ -139,17 +143,20 @@ def process_img(img):
     labels = label(heatmap)
     return draw_labeled_bboxes(np.copy(img), labels)
     
+jfile = open('model.json', 'r')
+model = model_from_json(json.loads(jfile.read()))
+model.load_weights('model.h5')
 
 img = cv2.imread('test4.jpg')
-draw_img=porcess_img(img)
-#image_utils.plot_images([draw_img])
+draw_img=process_img(img)
+image_utils.plot_images([draw_img])
 
-project_video_res = 'project_video_res.mp4'
-clip1 = VideoFileClip("project_video.mp4")
-project_video_clip = clip1.fl_image(porcess_img)
-project_video_clip.write_videofile(project_video_res, audio=False)
+# project_video_res = 'project_video_res.mp4'
+# clip1 = VideoFileClip("project_video.mp4")
+# project_video_clip = clip1.fl_image(process_img)
+# project_video_clip.write_videofile(project_video_res, audio=False)
 
-project_video_res = 'test_video_res.mp4'
-clip1 = VideoFileClip("test_video.mp4")
-project_video_clip = clip1.fl_image(porcess_img)
-project_video_clip.write_videofile(project_video_res, audio=False)
+# project_video_res = 'test_video_res.mp4'
+# clip1 = VideoFileClip("test_video.mp4")
+# project_video_clip = clip1.fl_image(process_img)
+# project_video_clip.write_videofile(project_video_res, audio=False)
